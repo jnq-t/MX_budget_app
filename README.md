@@ -1,24 +1,11 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This budget app is made using the MX Platform Api. See more at https://www.mx.com/products/platform-api.
+This app is also built following the Learn Enough Ruby To Be Dangerous. Find out more at https://www.learnenough.com/ruby-on-rails-6th-edition-tutorial.
+Specs: 
 
-Things you may want to cover:
+* Ruby v 3.0.0 (not specified in the gemfile) 
 
-* Ruby version
+* Rails v 6.1.3.1
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* sqlite developement db, postgres production db
