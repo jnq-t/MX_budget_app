@@ -2,8 +2,10 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   def setup 
-    @user = User.new(user_id: "Example User", email: "user@example.com",
+    @user = User.new(user_id: "ExampleUser", email: "user@example.db",
                      password: "foobar", password_confirmation: "foobar")
+    @VALID_USR_REGEX = /USR-[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}/
+
   end
 
   test "should be valid" do 
@@ -75,5 +77,29 @@ class UserTest < ActiveSupport::TestCase
   test "password should have a minimum length" do 
     @user.password = @user.password_confirmation = "a" * 5 
     assert_not @user.valid?
+  end
+
+  test "user without associated API user cannot delete_self" do 
+    assert_equal @user.delete_self, "user has no guid and will not be deleted"
+  end
+
+  test "test group for created user in API" do 
+    
+    #user should be successfully created
+    response = @user.create_user
+    assert_equal response, 200, "test user should be created" + response.to_s
+
+    #duplicate user should not be created 
+    assert_equal @user.create_user, "user name already taken", "test duplicate user should not be created"
+
+    #defaults should not be empty 
+    assert_includes [true, false], @user.is_disabled, "test default boolean should be set" 
+    assert @user.metadata, "test default metadata should be set"
+
+    #read user should return same value as db
+    assert_equal @user.user_id, @user.read_user["id"], "test read user has same user_id as database"
+
+    #delete user
+    assert_equal @user.delete_self, 204, "test user should be successfully deleted"
   end
 end
