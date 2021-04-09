@@ -141,8 +141,8 @@ class User < ApplicationRecord
     end
 
     #return member objects assosiated with user in db
-    def find_members 
-      Member.where(:user_guid => self.guid)
-    end
+  def find_members 
+    Member.where(:user_guid => self.guid)
+  end
 
 end
