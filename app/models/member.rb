@@ -20,10 +20,11 @@ class Member < ApplicationRecord
   #INSTANCE METHODS
 
   def check_status 
-    HTTP.headers(:accept => @@accept)
-      .basic_auth(:user => ENV["API_USERNAME"] ,
-                  :pass => ENV["API_PASSWORD"])
-      .get("#{@@base_url}/users/#{self.user_guid}/members/#{self.guid}/status").parse["member"]#["connection_status"]
+    response = HTTP.headers(:accept => @@accept)
+                   .basic_auth(:user => ENV["API_USERNAME"] ,
+                               :pass => ENV["API_PASSWORD"])
+                   .get("#{@@base_url}/users/#{self.user_guid}/members/#{self.guid}/status")
+    return response.parse["member"]["connection_status"], "successfully aggregated at: #{response.parse["member"]["successfully_aggregated_at"]}"
   end
 
 end

@@ -5,6 +5,7 @@ class UserTest < ActiveSupport::TestCase
     @user = User.new(user_id: "ExampleUser", email: "user@example.db",
                      password: "foobar", password_confirmation: "foobar")
     @VALID_USR_REGEX = /USR-[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}/
+    @VALID_MBR_REGEX = /MBR-[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}/
 
   end
 
@@ -87,19 +88,28 @@ class UserTest < ActiveSupport::TestCase
     
     #user should be successfully created
     response = @user.create_user
-    assert_equal response, 200, "test user should be created" + response.to_s
+    assert_equal 200, response, "test user should be created" + " " + response.to_s
 
     #duplicate user should not be created 
-    assert_equal @user.create_user, "user name already taken", "test duplicate user should not be created"
+    assert_equal "user name already taken", @user.create_user, "test duplicate user should not be created"
 
     #defaults should not be empty 
     assert_includes [true, false], @user.is_disabled, "test default boolean should be set" 
     assert @user.metadata, "test default metadata should be set"
 
     #read user should return same value as db
-    assert_equal @user.user_id, @user.read_user["id"], "test read user has same user_id as database"
+    assert_equal @user.read_user["id"], @user.user_id, "test read user has same user_id as database"
+
+    #valid user guid 
+    assert_match @VALID_USR_REGEX, @user.guid
+
+    #member at mxbank should sucessfully be created 
+    member = @user.create_member 
+    assert !!member, "test member should be successfully created" 
+    assert_match @VALID_MBR_REGEX, member["guid"], "test member should have valid guid"
+
 
     #delete user
-    assert_equal @user.delete_self, 204, "test user should be successfully deleted"
+    assert_equal 204, @user.delete_self, "test user should be successfully deleted"
   end
 end
