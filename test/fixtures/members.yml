@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  guid: MyString
+  member_id: MyString
+  user_guid: MyString
+  aggregated_at: MyString
+  institution_code: 
+  is_being_aggregated: MyString
+  is_oauth: false
+  metadata: MyString
+  name: MyString
+  successfully_aggregated_at: MyString
+
+two:
+  guid: MyString
+  member_id: MyString
+  user_guid: MyString
+  aggregated_at: MyString
+  institution_code: 
+  is_being_aggregated: MyString
+  is_oauth: false
+  metadata: MyString
+  name: MyString
+  successfully_aggregated_at: MyString

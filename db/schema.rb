@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_08_215248) do
+ActiveRecord::Schema.define(version: 2021_04_09_002727) do
+
+  create_table "members", force: :cascade do |t|
+    t.string "guid"
+    t.string "member_id"
+    t.string "user_guid"
+    t.string "aggregated_at"
+    t.string "institution_code"
+    t.string "is_being_aggregated"
+    t.boolean "is_oauth"
+    t.string "metadata"
+    t.string "name"
+    t.string "successfully_aggregated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "guid"
