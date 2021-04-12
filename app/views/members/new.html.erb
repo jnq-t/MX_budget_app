@@ -1,2 +1,17 @@
-<h1>Members#new</h1>
-<p>Find me in app/views/members/new.html.erb</p>
+<h1>Account Info</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_with(model: @member, local: true) do |f| %>
+      <%= f.label :Username%>
+      <%= f.text_field :username%>
+
+      <%= f.label :password%>
+      <%= f.password_field :password%>
+
+      <%= f.hidden_field :institution_code, value: params["institution_code"]%>
+      
+      <%= f.submit "Create my account", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

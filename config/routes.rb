@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   root 'static_pages#home'
   get '/settings', to: 'static_pages#settings'
   get '/signup', to: 'users#new'
-  resources :users
+  get '/members', to: 'members#index'
+  resources :users, :members
 end
 

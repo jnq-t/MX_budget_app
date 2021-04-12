@@ -1,0 +1,4 @@
+<% list_institutions.each do |institution| %>
+  <p> <%= link_to institution["name"], new_member_path(:institution_code => institution["code"] )%></p>
+  <%= image_tag institution["small_logo_url"] %>
+  <% end %>
