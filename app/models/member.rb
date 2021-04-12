@@ -27,4 +27,9 @@ class Member < ApplicationRecord
     return response.parse["member"]["connection_status"], "successfully aggregated at: #{response.parse["member"]["successfully_aggregated_at"]}"
   end
 
+  def aggregate_member
+    HTTP.headers(:accept => @@accept)
+        .basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
+        .post("https://int-api.mx.com/users/#{self.user_guid}/members/#{self.guid}/aggregate").status
+  end
 end

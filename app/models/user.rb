@@ -34,6 +34,10 @@ class User < ApplicationRecord
                   :pass => ENV["API_PASSWORD"])
       .delete("#{@@base_url}/users/#{guid}").code
     end
+
+    #TODO 
+    #UPDATE USERS--updates local db to agree with API instances of User 
+
   end
 
   #INSTANCE METHODS
@@ -149,35 +153,7 @@ class User < ApplicationRecord
     Member.where(:user_guid => self.guid)
   end
 
-  # def update_members_db
-  #   response = self.list_members
-  #     response.each do |member|
-  #       member_db = Member.find_by member["guid"]
-  #       if member_db
-  #         #UPDATE MEMBER WITH RELEVANT FIELDS
-  #       else
-  #         #CREATE MEMBER WITH RELEVANT FIELDS
-  #         Member.create(
-  # def update_members_db
-  #   self.list_members.each do |api_member|
-  #     member_params = {}
-  #     api_member.each_pair do |key, value|
-  #       if Member.attribute_names.include? key
-  #         unless key == "id" 
-  #           member_params[key] = value
-  #         end
-  #       end
-  #       puts member_params
-  #       new_member = Member.new(member_params)
-  #       if new_member.valid?
-  #         new_member.save
-  #       else
-  #         return "invalid member params" 
-  #       end
-  #     end
-  #   end
-  # end
-
+  #updates db to match api records
   def update_members
     #create new members
     self.list_members.each do |api_member|
@@ -209,6 +185,49 @@ class User < ApplicationRecord
       end
     end
   end
+
+  #ACCONTS LOGIC  
+
+  #lists all accounts associated with self
+  def list_accounts
+    HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
+    .get("#{@@base_url}/users/#{self.guid}/accounts").parse["accounts"]
+  end
+
+  #parses accounts based on given paramaters
+  def account_details(*paramaters)
+    accounts = []
+    self.list_accounts.each do |account|
+      details = {}      
+      account.each do |key, value|
+        if paramaters.include? key
+          details[key] = value
+        end
+      end
+      accounts << details
+    end
+    accounts
+  end
+   
+  def list_transactions(page = 1, records_per_page = 25)
+    HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
+    .get("#{@@base_url}/users/#{self.guid}/transactions", params: { :page => page, :records_per_page => records_per_page}).parse["transactions"]
+  end
+
+  def transaction_details(page = 1, records_per_page = 25, *paramaters)
+    transactions = []
+    self.list_transactions(page, records_per_page).each do |transaction|
+      details = {} 
+      transaction.each do |key, value|
+        if paramaters.include? key 
+          details[key] = value
+        end
+      end
+      transactions << details
+    end
+    transactions
+  end
+
 
 
 
