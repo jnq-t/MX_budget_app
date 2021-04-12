@@ -1,0 +1,9 @@
+<h1> User Id: <%= @user.user_id %>, GUID: <%= @user.guid %> </h1>
+
+
+<h2>memberships</h2>
+<p>
+  <%= @user.list_members%> 
+</p>
+<h2>accounts</h2>
+  <%= @user.account_details("available_balance", "type", "institution_code") %> 
