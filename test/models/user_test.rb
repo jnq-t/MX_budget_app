@@ -104,9 +104,10 @@ class UserTest < ActiveSupport::TestCase
     assert_match @VALID_USR_REGEX, @user.guid
 
     #member at mxbank should sucessfully be created 
-    member = @user.create_member 
-    assert !!member, "test member should be successfully created" 
-    assert_match @VALID_MBR_REGEX, member["guid"], "test member should have valid guid"
+    @user.create_member 
+    members = @user.find_members
+    assert_equal 1, members.length, "test user should have exactly one member"
+    assert_match @VALID_MBR_REGEX, members[0]["guid"], "test member should have valid guid"
 
 
     #delete user
