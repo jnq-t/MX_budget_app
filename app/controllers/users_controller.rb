@@ -10,7 +10,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      flash[:success] = "Welcome to you budget! Choose accounts to link!"
+      flash[:success] = "Welcome to your budget! Choose accounts to link!"
+      #@user.create_user goes here 
       redirect_to members_path
     
     else
