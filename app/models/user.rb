@@ -35,9 +35,11 @@ class User < ApplicationRecord
       .delete("#{@@base_url}/users/#{guid}").code
     end
 
-    #TODO 
-    #UPDATE USERS--updates local db to agree with API instances of User 
-
+    def digest(string)
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                    BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost: cost)
+    end
   end
 
   #INSTANCE METHODS
@@ -197,16 +199,20 @@ class User < ApplicationRecord
   #parses accounts based on given paramaters
   def account_details(*paramaters)
     accounts = []
-    self.list_accounts.each do |account|
-      details = {}      
-      account.each do |key, value|
-        if paramaters.include? key
-          details[key] = value
+    unless accounts.blank?
+      self.list_accounts.each do |account|
+        details = {}      
+        account.each do |key, value|
+          if paramaters.include? key
+            details[key] = value
+          end
         end
+        accounts << details
       end
-      accounts << details
+      accounts
+    else
+      "user has no accounts"
     end
-    accounts
   end
    
   def list_transactions(page = 1, records_per_page = 25)
