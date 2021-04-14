@@ -199,7 +199,7 @@ class User < ApplicationRecord
   #parses accounts based on given paramaters
   def account_details(*paramaters)
     accounts = []
-    unless accounts.blank?
+    unless self.list_accounts.blank?
       self.list_accounts.each do |account|
         details = {}      
         account.each do |key, value|
@@ -210,8 +210,6 @@ class User < ApplicationRecord
         accounts << details
       end
       accounts
-    else
-      "user has no accounts"
     end
   end
    

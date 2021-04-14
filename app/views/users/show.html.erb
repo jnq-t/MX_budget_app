@@ -1,9 +1,9 @@
-<h1> User Id: <%= @user.user_id %>, GUID: <%= @user.guid %> </h1>
+<h1> User Id: <%= current_user.user_id%>, GUID: <%= current_user.guid %> </h1>
 
 
 <h2>memberships</h2>
 <p>
-  <%= @user.list_members%> 
+  <%= current_user.list_members%> 
 </p>
 <h2>accounts</h2>
-  <%= @user.account_details("available_balance", "type", "institution_code") %> 
+  <%= current_user.account_details("available_balance", "type", "institution_code") %> 
