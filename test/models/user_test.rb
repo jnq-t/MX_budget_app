@@ -2,7 +2,7 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   def setup 
-    @user = User.new(user_id: "ExampleUser", email: "user@example.db",
+    @user = User.new(user_id: "ExampleUser", email: "user@usertest.com",
                      password: "foobar", password_confirmation: "foobar")
     @VALID_USR_REGEX = /USR-[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}/
     @VALID_MBR_REGEX = /MBR-[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}/
