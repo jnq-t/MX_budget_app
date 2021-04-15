@@ -7,3 +7,13 @@
 </p>
 <h2>accounts</h2>
   <%= current_user.account_details("available_balance", "type", "institution_code") %> 
+<h2>income</h2>
+  <% response = current_user.transaction_details(1, 100, "amount", "category", "transacted_at", ) %> 
+  <ul>
+    <% response.each do |transaction| %>
+        <li><% transaction.each_pair do |key, value|%>
+          <%= "#{key.upcase}: #{value}, " %>
+          <%end%>
+        </li>
+  <%end%>
+  </ul>
