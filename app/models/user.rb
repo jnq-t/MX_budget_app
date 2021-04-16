@@ -220,17 +220,22 @@ class User < ApplicationRecord
 
   def transaction_details(page = 1, records_per_page = 25, *paramaters)
     transactions = []
-    self.list_transactions(page, records_per_page).each do |transaction|
-      details = {} 
-      transaction.each do |key, value|
-        if paramaters.include? key 
-          details[key] = value
+    if self.list_transactions(page, records_per_page).nil?
+      "no transactions available"
+    else 
+      self.list_transactions(page, records_per_page).each do |transaction|
+        details = {} 
+        transaction.each do |key, value|
+          if paramaters.include? key 
+            details[key] = value
+          end
         end
+        transactions << details
       end
-      transactions << details
+      transactions
     end
-    transactions
   end
+
 
 
 
