@@ -229,7 +229,7 @@ class User < ApplicationRecord
 
   
   #TRANSACTIONS LOGIC
-  def list_transactions(page = 1, records_per_page = 25)
+  def list_transactions(page = 1, records_per_page = 100)
     HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
     .get("#{@@base_url}/users/#{self.guid}/transactions", params: { :page => page, :records_per_page => records_per_page})
   end
@@ -252,27 +252,54 @@ class User < ApplicationRecord
     end
   end
 
-  def recursive_collect_transactions(current_page, transactions = [])
-    response = self.list_transactions(current_page, 100)
-    if response.parse["transactions"].blank?
-      return "error with response"
+  
+
+  def transactions_this_month(month = Time.now.month)
+    transactions = []
+    current_page = 1
+    page = self.list_transactions(current_page).parse["transactions"]
+    if page.blank? 
+      "error listing transactions"
     end
-    pages = response.parse["pagination"]
-    if pages["current_page"] >= pages["total_pages"]
-      response.parse["transactions"].each do |transaction|
-        transactions.append(transaction)
+    #loop list_transactions 
+    while page[0]["transacted_at"].to_datetime.month >= month
+      #loop through response
+      page.each do |transaction|
+        if transaction["transacted_at"].to_datetime.month == month
+          transactions.append(transaction)
+        end
       end
-      return transactions
+      current_page += 1
+      page = self.list_transactions(current_page).parse["transactions"]
+      if page.blank?
+        break 
+      end  
+    end
+    if transactions.empty?
+      "no transactions avaible for given month"
     else
-      response.parse["transactions"].each do |transaction|
-        transactions.append(transaction)
-      end
-      recursive_collect_transactions(current_page +1, transactions)
+      transactions
     end
   end
 
-
-
-
-
 end
+
+#WAY too slow
+# def recursive_collect_transactions(current_page, transactions = [])
+#     response = self.list_transactions(current_page, 100)
+#     if response.parse["transactions"].blank?
+#       return "error with response"
+#     end
+#     pages = response.parse["pagination"]
+#     if pages["current_page"] >= pages["total_pages"]
+#       response.parse["transactions"].each do |transaction|
+#         transactions.append(transaction)
+#       end
+#       return transactions
+#     else
+#       response.parse["transactions"].each do |transaction|
+#         transactions.append(transaction)
+#       end
+#       recursive_collect_transactions(current_page +1, transactions)
+#     end
+#   end

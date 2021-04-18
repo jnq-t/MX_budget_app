@@ -3,18 +3,18 @@
 
 
 <h2>Your Spending</h2>
-  <% response = current_user.recursive_collect_transactions(1) %> 
-  <% if response.is_a? String %>
-    <%= response %>
-  <% else %>
-    <ul class="list-group list-group-flush">
-    <% response.each do |transaction| %>
-       <%if transaction["is_expense"] == true %>
-        <li class= "list-group-item">
-          <%= "AMMOUNT: #{transaction["amount"]}, CATEGORY: #{transaction["category"]}, DATE: #{transaction["transacted_at"]}"%>, 
-          INSTITUTION: <%= current_user.account_belongs_to(transaction["account_guid"]) %>
-        </li>
-        <%end%>
+    <% response = current_user.transactions_this_month %> 
+    <% if response.is_a? String %>
+      <%= response %>
+    <% else %>
+      <ul class="list-group list-group-flush">
+      <% response.each do |transaction| %>
+        <%if transaction["is_expense"] == true %>
+          <li class= "list-group-item">
+            <%= "AMMOUNT: #{transaction["amount"]}, CATEGORY: #{transaction["category"]}, DATE: #{transaction["transacted_at"]}"%>, 
+            INSTITUTION: <%= current_user.account_belongs_to(transaction["account_guid"]) %>
+          </li>
+          <%end%>
+      <%end%>
     <%end%>
-  <%end%>
-  </ul>
+    </ul>
