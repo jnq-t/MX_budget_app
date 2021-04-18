@@ -1,23 +1,20 @@
-<h1> User Id: <%= current_user.user_id%>, GUID: <%= current_user.guid %> </h1>
+<h2><Your Budget></h2>
+<strong>This month</strong>: 
 
 
-<h2>memberships</h2>
-<p>
-  <%= current_user.list_members%> 
-</p>
-<h2>accounts</h2>
-  <%= current_user.account_details("available_balance", "type", "institution_code") %> 
-<h2>income</h2>
-  <% response = current_user.transaction_details(1, 100, "amount", "category", "transacted_at") %> 
+<h2>Your Spending</h2>
+  <% response = current_user.recursive_collect_transactions(1) %> 
   <% if response.is_a? String %>
     <%= response %>
   <% else %>
-    <ul>
+    <ul class="list-group list-group-flush">
     <% response.each do |transaction| %>
-        <li><% transaction.each_pair do |key, value|%>
-          <%= "#{key.upcase}: #{value}, " %>
-          <%end%>
+       <%if transaction["is_expense"] == true %>
+        <li class= "list-group-item">
+          <%= "AMMOUNT: #{transaction["amount"]}, CATEGORY: #{transaction["category"]}, DATE: #{transaction["transacted_at"]}"%>, 
+          INSTITUTION: <%= current_user.account_belongs_to(transaction["account_guid"]) %>
         </li>
+        <%end%>
     <%end%>
   <%end%>
   </ul>

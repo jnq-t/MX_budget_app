@@ -40,6 +40,13 @@ class User < ApplicationRecord
                                                     BCrypt::Engine.cost
       BCrypt::Password.create(string, cost: cost)
     end
+
+    def read_institution(institution_code)
+      HTTP.headers(:accept => @@accept)
+      .basic_auth(:user => ENV["API_USERNAME"],
+                  :pass => ENV["API_PASSWORD"])
+      .get("#{@@base_url}/institutions/#{institution_code}").parse["institution"]
+    end
   end
 
   #INSTANCE METHODS
@@ -212,10 +219,19 @@ class User < ApplicationRecord
       accounts
     end
   end
-   
+
+  def account_belongs_to(account_guid)
+    institution_code = HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
+    .get("#{@@base_url}/users/#{self.guid}/accounts/#{account_guid}").parse["account"]["institution_code"]
+
+    self.class.read_institution(institution_code)["name"]
+  end
+
+  
+  #TRANSACTIONS LOGIC
   def list_transactions(page = 1, records_per_page = 25)
     HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
-    .get("#{@@base_url}/users/#{self.guid}/transactions", params: { :page => page, :records_per_page => records_per_page}).parse["transactions"]
+    .get("#{@@base_url}/users/#{self.guid}/transactions", params: { :page => page, :records_per_page => records_per_page})
   end
 
   def transaction_details(page = 1, records_per_page = 25, *paramaters)
@@ -223,7 +239,7 @@ class User < ApplicationRecord
     if self.list_transactions(page, records_per_page).nil?
       "no transactions available"
     else 
-      self.list_transactions(page, records_per_page).each do |transaction|
+      self.list_transactions(page, records_per_page).parse["transactions"].each do |transaction|
         details = {} 
         transaction.each do |key, value|
           if paramaters.include? key 
@@ -233,6 +249,25 @@ class User < ApplicationRecord
         transactions << details
       end
       transactions
+    end
+  end
+
+  def recursive_collect_transactions(current_page, transactions = [])
+    response = self.list_transactions(current_page, 100)
+    if response.parse["transactions"].blank?
+      return "error with response"
+    end
+    pages = response.parse["pagination"]
+    if pages["current_page"] >= pages["total_pages"]
+      response.parse["transactions"].each do |transaction|
+        transactions.append(transaction)
+      end
+      return transactions
+    else
+      response.parse["transactions"].each do |transaction|
+        transactions.append(transaction)
+      end
+      recursive_collect_transactions(current_page +1, transactions)
     end
   end
 
