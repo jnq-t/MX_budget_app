@@ -1,14 +1,18 @@
 <h2><Your Budget></h2>
 <% response = current_user.transactions_this_month %>
-<h2>Your Spending this month: <%= number_to_currency(response[:spent_this_month]) %>$</h2>
-<ul class = "list-group list-group-flush">
-  <% response[:transactions].each do |transaction| %>   
-    <% if transaction["is_expense"] == true %>
-      <li class = "list-group-item">
-        <%= "#{transaction["description"]}, #{number_to_currency(transaction["amount"])}, 
-             #{transaction["transacted_at"].to_datetime.to_formatted_s(:short)}" %>
-      </li>
+<% if response.is_a? String %>
+  <%= response %>
+<% else %>
+  <h2>Your Spending this month: <%= number_to_currency(response[:spent_this_month]) %></h2>
+  <ul class = "list-group list-group-flush">
+    <% response[:transactions].each do |transaction| %>   
+      <% if transaction["is_expense"] == true %>
+        <li class = "list-group-item">
+          <%= "#{transaction["description"]}, #{number_to_currency(transaction["amount"])}, 
+              #{transaction["transacted_at"].to_datetime.to_formatted_s(:short)}" %>
+        </li>
+      <%end%>
     <%end%>
-  <%end%>
-</ul>
+  </ul>
+<% end %>
     

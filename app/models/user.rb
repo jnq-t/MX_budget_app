@@ -170,7 +170,6 @@ class User < ApplicationRecord
       api_member.each_pair do |key, value|
         unless key == "id"
           if Member.attribute_names.include? key
-            # puts " #{key}: #{value}"
             member_params[key] = value
           end
         end
@@ -260,7 +259,7 @@ class User < ApplicationRecord
     current_page = 1
     page = self.list_transactions(current_page).parse["transactions"]
     if page.blank? 
-      "error listing transactions"
+      return "error listing transactions"
     end
     #loop list_transactions 
     while page[0]["transacted_at"].to_datetime.month >= month
