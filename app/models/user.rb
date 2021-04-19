@@ -255,6 +255,7 @@ class User < ApplicationRecord
   
 
   def transactions_this_month(month = Time.now.month)
+    spent_this_month = 0
     transactions = []
     current_page = 1
     page = self.list_transactions(current_page).parse["transactions"]
@@ -265,8 +266,9 @@ class User < ApplicationRecord
     while page[0]["transacted_at"].to_datetime.month >= month
       #loop through response
       page.each do |transaction|
-        if transaction["transacted_at"].to_datetime.month == month
+        if transaction["transacted_at"].to_datetime.month == month && transaction["is_expense"] == true
           transactions.append(transaction)
+          spent_this_month += transaction["amount"]
         end
       end
       current_page += 1
@@ -278,7 +280,7 @@ class User < ApplicationRecord
     if transactions.empty?
       "no transactions avaible for given month"
     else
-      transactions
+      return {:transactions => transactions, :spent_this_month => spent_this_month} 
     end
   end
 
