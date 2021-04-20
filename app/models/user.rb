@@ -283,6 +283,30 @@ class User < ApplicationRecord
     end
   end
 
+  #INCOME LOGIC
+  def create_income(name, amount, date)
+    date.to_datetime
+    Income.create(name: name, amount: amount, date: date, user_guid: self.guid)
+  end
+
+  def list_income(month = Time.now.month)
+    total = 0 
+    income_details = []
+    income_all = Income.where(:user_guid => self.guid)
+    if income_all.empty?
+      return "no income for this user"
+    end
+    income_all.each do |income|
+      if income[:date].to_datetime.month == month
+        total += income.amount
+        income_details.append(income)
+      end
+    end
+    if income_details.empty?
+      return "no income for the designated month"
+    end
+    return {:income_details => income_details, :total => total}
+  end
 end
 
 #WAY too slow
