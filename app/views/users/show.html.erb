@@ -1,6 +1,15 @@
 <% incomes = current_user.list_income %>
 <% transactions = current_user.transactions_this_month %>
-<% your_money = incomes[:total] - transactions[:spent_this_month] %>
+<% if (incomes.is_a? String) && (transactions.is_a? String) %>
+  <% your_money = 0 %>
+<% elsif incomes.is_a? String %>
+  <% your_money = -transactions[:spent_this_month] %>
+<% elsif transactions.is_a? String %>
+  <% your_money = incomes[:total] %>
+<% else %>
+  <% your_money = incomes[:total] - transactions[:spent_this_month] %>
+<% end %>
+ 
 <h2>
     <% if your_money >= 0 %>
         <div class = "in-line"> Your Money: </div><div class = "text-success"><%= number_to_currency(your_money) %></div>
@@ -8,8 +17,8 @@
         <div class = "in-line"> Your Money: </div><div class = "text-danger"><%= number_to_currency(your_money) %></div>
     <% end %>
 </h2>
-<% if incomes.is_a? String %> 
-  <%= incomes %>
+<% if incomes.is_a? String %>
+  <div class = "text-danger"><%= incomes %></div>
 <% else %> 
 <h2> Your Income this month: <%= number_to_currency(incomes[:total]) %></h2> 
   <ul class = "list-group list-goup-flush">

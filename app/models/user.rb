@@ -294,7 +294,7 @@ class User < ApplicationRecord
     income_details = []
     income_all = Income.where(:user_guid => self.guid)
     if income_all.empty?
-      return "no income for this user"
+      return "No income for this user!"
     end
     income_all.each do |income|
       if income[:date].to_datetime.month == month
