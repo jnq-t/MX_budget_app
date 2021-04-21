@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # get 'incomes/new'
+  # get 'incomes/create'
+  # get 'incomes/destroy'
   get 'sessions/new'
   get 'members/new'
   get 'users/new'
@@ -9,6 +12,9 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
+  get '/incomes', to: 'incomes#new'
+  post '/incomes', to: 'incomes#create'
+  delete '/incomes', to: 'incomes#destroy'
   resources :users, :members
 end
 
