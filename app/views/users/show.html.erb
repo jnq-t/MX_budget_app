@@ -1,15 +1,16 @@
 <% incomes = current_user.list_income %>
 <% transactions = current_user.transactions_this_month %>
-<% if (incomes.is_a? String) && (transactions.is_a? String) %>
-  <% your_money = 0 %>
-<% elsif incomes.is_a? String %>
-  <% your_money = -transactions[:spent_this_month] %>
-<% elsif transactions.is_a? String %>
-  <% your_money = incomes[:total] %>
-<% else %>
-  <% your_money = incomes[:total] - transactions[:spent_this_month] %>
+<% expenses = current_user.list_expenses %>
+<% if incomes.is_a? String %> 
+  <% no_income = 0 %>
 <% end %>
- 
+<% if transactions.is_a? String %>
+  <% no_transactions = 0 %>
+<% end %>
+<% if expenses.is_a? String %> 
+  <% no_expenses = 0 %>
+<% end %>
+<% your_money = (no_income || incomes[:total]) - (no_transactions ||transactions[:spent_this_month]) - (no_expenses || expenses[:total]) %> 
 <h2>
     <% if your_money >= 0 %>
         <div class = "in-line"> Your Money: </div><div class = "text-success"><%= number_to_currency(your_money) %></div>
@@ -17,11 +18,33 @@
         <div class = "in-line"> Your Money: </div><div class = "text-danger"><%= number_to_currency(your_money) %></div>
     <% end %>
 </h2>
+
+<% if expenses.is_a? String %> 
+  <strong><%= expenses %></strong>
+  (<div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
+  <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>)
+  <% else %>
+    <div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
+    <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>
+    <ul class = "list-group list-group-flush">
+      <% expenses[:expense_details].each do |expense| %>
+        <li class = "list-group-item" >
+          <%= "#{expense.name.capitalize}, #{number_to_currency(expense.amount)}, #{expense.date.to_datetime.to_formatted_s(:short)}" %>
+          <% unless expense.description.nil? %>
+            <%= ", #{expense.description}" %>
+          <% end %>
+        </li> 
+        <% end %>
+    </ul>
+  <% end %>
 <% if incomes.is_a? String %>
-  <div class = "text-danger"><%= incomes %></div>
+  <br><strong> <%= incomes %></strong> (<div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
+  <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>)
 <% else %> 
 <h2> Your Income this month: <%= number_to_currency(incomes[:total]) %></h2> 
-  <ul class = "list-group list-goup-flush">
+<div class = "in-line"><%=link_to "add income, ", "#", class: "budget-link"%></div>
+<div class = "in-line"><%=link_to "remove income", "#", class: "budget-link"%></div>
+  <ul class = "list-group list-group-flush">
     <% incomes[:income_details].each do |income| %> 
      <li class = "list-group-item">
       <%= "#{income.name.capitalize}, #{number_to_currency(income.amount)}, #{income.date.to_datetime.to_formatted_s(:short)}"%>

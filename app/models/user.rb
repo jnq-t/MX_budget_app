@@ -294,7 +294,7 @@ class User < ApplicationRecord
     income_details = []
     income_all = Income.where(:user_guid => self.guid)
     if income_all.empty?
-      return "No income for this user!"
+      return "No income"
     end
     income_all.each do |income|
       if income[:date].to_datetime.month == month
@@ -307,24 +307,30 @@ class User < ApplicationRecord
     end
     return {:income_details => income_details, :total => total}
   end
-end
 
-#WAY too slow
-# def recursive_collect_transactions(current_page, transactions = [])
-#     response = self.list_transactions(current_page, 100)
-#     if response.parse["transactions"].blank?
-#       return "error with response"
-#     end
-#     pages = response.parse["pagination"]
-#     if pages["current_page"] >= pages["total_pages"]
-#       response.parse["transactions"].each do |transaction|
-#         transactions.append(transaction)
-#       end
-#       return transactions
-#     else
-#       response.parse["transactions"].each do |transaction|
-#         transactions.append(transaction)
-#       end
-#       recursive_collect_transactions(current_page +1, transactions)
-#     end
-#   end
+#EXPENSE LOGIC 
+
+def create_expense(name, amount, date, description = nil)
+    date.to_datetime
+    Expense.create(name: name, amount: amount, date: date, user_guid: self.guid, description: description)
+  end
+
+  def list_expenses(month = Time.now.month)
+    total = 0 
+    expense_details= []
+    expense_all= Expense.where(:user_guid => self.guid)
+    if expense_all.empty?
+      return "No expenses"
+    end
+    expense_all.each do |expense|
+      if expense[:date].to_datetime.month == month
+        total += expense.amount
+        expense_details.append(expense)
+      end
+    end
+    if expense_details.empty?
+      return "no expenses for the designated month"
+    end
+    return {:expense_details=> expense_details, :total => total}
+  end
+end
