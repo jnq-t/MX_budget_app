@@ -21,7 +21,7 @@
 
 <% if expenses.is_a? String %> 
   <strong><%= expenses %></strong>
-  (<div class = "in-line"><%=link_to "add expense, ", expenses_path, class: "budget-link"%></div>
+  (<div class = "in-line"><%=link_to "add expense", expenses_path, class: "budget-link"%></div>)
   <% else %>
     <div class = "in-line"><%=link_to "add expense, ", expenses_path, class: "budget-link"%></div>
     <div class = "in-line"><%=link_to "remove expense", expenses_delete_path, class: "budget-link"%></div>
@@ -51,7 +51,7 @@
 <% end %>
 
 <% if transactions.is_a? String %>
-  <br><strong>Transactios are being aggregated</strong>(<%= link_to "refresh", current_user, class: "budget-link"%>)
+  <br><strong>No transactions available </strong>(<%= link_to "link memberships", member_path, class: "budget-link"%>)
 <% else %>
   <h2>Your Spending this month: <%= number_to_currency(transactions[:spent_this_month]) %></h2>
   <ul class = "list-group list-group-flush">

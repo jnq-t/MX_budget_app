@@ -147,9 +147,22 @@ class User < ApplicationRecord
         return post_response.code
       end
     end
-
-      
   end
+
+  def check_status_persistent(member_guid)
+      begin
+        http = HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], 
+                                                            :pass => ENV["API_PASSWORD"])
+                   .persistent "#{@@base_url}"
+        status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+        while status == "CREATED" do 
+          status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+        end
+      ensure 
+        http.close if http
+      end
+      return status
+    end
 
     #list members associated with user in API
     def list_members
@@ -174,7 +187,7 @@ class User < ApplicationRecord
           end
         end
       end
-      #if member already exists
+      #member already exists
       temp = Member.find_by guid: member_params["guid"]
       if !!temp
         temp.attributes = member_params
@@ -190,6 +203,11 @@ class User < ApplicationRecord
         else
           return "problem with member params"
         end
+      end
+      #delete denied members
+      if api_member["connection_status"] == "DENIED"
+        Member.find_by(guid: member_params["guid"]).delete
+        Member.delete_member(self.guid, member_params["guid"])
       end
     end
   end
