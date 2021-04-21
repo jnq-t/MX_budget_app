@@ -1,0 +1,24 @@
+<strong><h2>Add expense</h2></strong>
+
+<div class = "row">
+  <div class = "col-md-6 col-md-offset-3">
+    <%= form_with(model: @expense, local: true) do |f| %>
+
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %> 
+
+      <%= f.label :amount %>
+      <%= f.number_field :amount, step: 0.01%>
+
+      <%= f.label :description %>
+      <%= f.text_field :description, class: 'form-control' %>
+
+       <%= f.label :date %>
+      <%= f.text_field :date, class: 'form-control', type: "date" %>
+     
+      <%= f.hidden_field :user_guid, value: current_user.guid%>
+
+      <%= f.submit "Add income", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

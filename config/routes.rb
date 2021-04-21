@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  # get 'incomes/new'
-  # get 'incomes/create'
-  # get 'incomes/destroy'
   get 'sessions/new'
   get 'members/new'
   get 'users/new'
@@ -16,6 +13,10 @@ Rails.application.routes.draw do
   post '/incomes', to: 'incomes#create'
   get '/incomes/delete', to: 'incomes#destroy'
   delete '/incomes/delete', to: 'incomes#destroy'
+  get '/expenses', to: 'expenses#new'
+  post '/expenses', to: 'expenses#create'
+  get '/expenses/delete', to: 'expenses#destroy'
+  delete '/expenses/delete', to: 'expenses#destroy'
   resources :users, :members
 end
 

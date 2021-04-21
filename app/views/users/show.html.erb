@@ -21,16 +21,15 @@
 
 <% if expenses.is_a? String %> 
   <strong><%= expenses %></strong>
-  (<div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
-  <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>)
+  (<div class = "in-line"><%=link_to "add expense, ", expenses_path, class: "budget-link"%></div>
   <% else %>
-    <div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
-    <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>
+    <div class = "in-line"><%=link_to "add expense, ", expenses_path, class: "budget-link"%></div>
+    <div class = "in-line"><%=link_to "remove expense", expenses_delete_path, class: "budget-link"%></div>
     <ul class = "list-group list-group-flush">
       <% expenses[:expense_details].each do |expense| %>
         <li class = "list-group-item" >
           <%= "#{expense.name.capitalize}, #{number_to_currency(expense.amount)}, #{expense.date.to_datetime.to_formatted_s(:short)}" %>
-          <% unless expense.description.nil? %>
+          <% unless expense.description.blank? %>
             <%= ", #{expense.description}" %>
           <% end %>
         </li> 
