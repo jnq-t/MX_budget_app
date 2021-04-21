@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
   get '/incomes', to: 'incomes#new'
   post '/incomes', to: 'incomes#create'
-  delete '/incomes', to: 'incomes#destroy'
+  get '/incomes/delete', to: 'incomes#destroy'
+  delete '/incomes/delete', to: 'incomes#destroy'
   resources :users, :members
 end
 

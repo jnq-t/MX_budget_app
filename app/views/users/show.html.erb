@@ -38,12 +38,11 @@
     </ul>
   <% end %>
 <% if incomes.is_a? String %>
-  <br><strong> <%= incomes %></strong> (<div class = "in-line"><%=link_to "add expense, ", "#", class: "budget-link"%></div>
-  <div class = "in-line"><%=link_to "remove expense", "#", class: "budget-link"%></div>)
+  <br><strong> <%= incomes %></strong> (<div class = "in-line"><%=link_to "add income", incomes_path, class: "budget-link"%></div>)
 <% else %> 
 <h2> Your Income this month: <%= number_to_currency(incomes[:total]) %></h2> 
-<div class = "in-line"><%=link_to "add income, ", "#", class: "budget-link"%></div>
-<div class = "in-line"><%=link_to "remove income", "#", class: "budget-link"%></div>
+<div class = "in-line"><%=link_to "add income, ", incomes_path, class: "budget-link"%></div>
+<div class = "in-line"><%=link_to "remove income", incomes_delete_path, class: "budget-link"%></div>
   <ul class = "list-group list-group-flush">
     <% incomes[:income_details].each do |income| %> 
      <li class = "list-group-item">
@@ -53,7 +52,7 @@
 <% end %>
 
 <% if transactions.is_a? String %>
-  <%= transactions %>
+  <br><strong>Transactios are being aggregated</strong>(<%= link_to "refresh", current_user, class: "budget-link"%>)
 <% else %>
   <h2>Your Spending this month: <%= number_to_currency(transactions[:spent_this_month]) %></h2>
   <ul class = "list-group list-group-flush">
