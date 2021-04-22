@@ -1,4 +1,12 @@
 class UsersController < ApplicationController
+  def index
+    if logged_in?
+    else
+      redirect_to login_path
+    end
+  end
+
+
   def new
     @user = User.new
   end
@@ -6,9 +14,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     if logged_in?
-      unless Rails.env.test?
-        current_user.update_members
-      end
+      current_user.update_members
     end
   end
 

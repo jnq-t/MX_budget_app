@@ -1,4 +1,6 @@
+<h1 class = "text-left">Link new memberships</h1>
+
 <% list_institutions.each do |institution| %>
-  <p> <%= link_to institution["name"], new_member_path(:institution_code => institution["code"] )%></p>
+  <p><strong> <%= link_to institution["name"], new_member_path(:institution_code => institution["code"] )%></strong></p>
   <%= image_tag institution["small_logo_url"] %>
   <% end %>
