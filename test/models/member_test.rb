@@ -11,7 +11,6 @@ class MemberTest < ActiveSupport::TestCase
     assert @member.valid? 
   end
 
-
   test "should have guid" do
     @member.guid = " " 
     assert_not @member.valid? 

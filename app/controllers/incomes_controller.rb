@@ -21,9 +21,9 @@ class IncomesController < ApplicationController
   def destroy
     @incomes = Income.where(:user_guid => current_user.guid)
     if params[:_method] == "delete"
-        Income.find_by(id: params[:id]).delete
-        flash[:success]= "Income deleted!"
-        redirect_to current_user
+      Income.find_by(id: params[:id]).delete
+      flash[:success]= "Income deleted!"
+      redirect_to current_user
     end
   end
 

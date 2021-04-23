@@ -92,19 +92,16 @@ class UserTest < ActiveSupport::TestCase
 
     #duplicate user should not be created 
     assert_equal "user name already taken", @user.create_user, "test duplicate user should not be created"
-
     #defaults should not be empty 
     assert_includes [true, false], @user.is_disabled, "test default boolean should be set" 
     assert @user.metadata, "test default metadata should be set"
-
     #read user should return same value as db
     assert_equal @user.read_user["id"], @user.user_id, "test read user has same user_id as database"
 
     #valid user guid 
     assert_match @VALID_USR_REGEX, @user.guid
-
-    #member at mxbank should sucessfully be created 
-    @user.create_member 
+    #persistent connection should raise a timeout error but the member should still be created
+    @user.create_member
     members = @user.find_members
     assert_equal 1, members.length, "test user should have exactly one member"
     assert_match @VALID_MBR_REGEX, members[0]["guid"], "test member should have valid guid"

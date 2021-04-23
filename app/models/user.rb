@@ -13,6 +13,7 @@ class User < ApplicationRecord
   @@accept = "application/vnd.mx.api.v1+json"
   @@content_type = "application/json"
   @@base_url = "https://int-api.mx.com" 
+  
     
   #DEFAULTS  
   @@default_metadata = "yada yada" 
@@ -177,37 +178,39 @@ class User < ApplicationRecord
 
   #updates db to match api records
   def update_members
-    #create new members
-    self.list_members.each do |api_member|
-      member_params = {}
-      api_member.each_pair do |key, value|
-        unless key == "id"
-          if Member.attribute_names.include? key
-            member_params[key] = value
+    unless self.list_members.blank?
+      #create new members
+      self.list_members.each do |api_member|
+        member_params = {}
+        api_member.each_pair do |key, value|
+          unless key == "id"
+            if Member.attribute_names.include? key
+              member_params[key] = value
+            end
           end
         end
-      end
-      #member already exists
-      temp = Member.find_by guid: member_params["guid"]
-      if !!temp
-        temp.attributes = member_params
-        if temp.valid? 
-          temp.save
+        #member already exists
+        temp = Member.find_by guid: member_params["guid"]
+        if !!temp
+          temp.attributes = member_params
+          if temp.valid? 
+            temp.save
+          else
+            return "problem updating existing member"
+          end
         else
-          return "problem updating existing member"
+          member = Member.new(member_params)
+          if member.valid?
+            member.save
+          else
+            return "problem with member params"
+          end
         end
-      else
-        member = Member.new(member_params)
-        if member.valid?
-          member.save
-        else
-          return "problem with member params"
+        #delete denied members
+        if api_member["connection_status"] != "CONNECTED"
+          Member.find_by(guid: member_params["guid"]).delete
+          Member.delete_member(self.guid, member_params["guid"])
         end
-      end
-      #delete denied members
-      if api_member["connection_status"] != "CONNECTED"
-        Member.find_by(guid: member_params["guid"]).delete
-        Member.delete_member(self.guid, member_params["guid"])
       end
     end
   end

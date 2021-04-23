@@ -16,6 +16,8 @@ class UsersController < ApplicationController
     if logged_in?
       current_user.update_members
     end
+  # rescue 
+  #   redirect_to members_show_path
   end
 
   def create

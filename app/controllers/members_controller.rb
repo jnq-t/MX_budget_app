@@ -27,6 +27,7 @@ class MembersController < ApplicationController
   end
 
   def show 
+    current_user.update_members
   end
 
   def destroy
