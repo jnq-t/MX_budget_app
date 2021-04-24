@@ -7,7 +7,7 @@
     <ul class = "list-group list-group-flush">
     <%current_user.find_members.each do |member|%>
       <li class = "list-group-item" >
-        <%= "#{member.name}, created at: #{member.created_at.to_datetime.to_formatted_s(:long)}, aggregated at: #{member.successfully_aggregated_at.to_datetime.to_formatted_s(:long)}"%>
+        <%= "#{member.name}, created at: #{member.created_at.to_datetime.to_formatted_s(:long)}, aggregated at: #{member.successfully_aggregated_at || "currently aggregating"}"%>
         </li>
     <% end %>
   <% end %>

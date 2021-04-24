@@ -133,12 +133,20 @@ class User < ApplicationRecord
       #create member in db
       if post_response.code == 202
         post_response = post_response.parse["member"]
-        #TODO update with passing hash
-        Member.create(guid: post_response["guid"], member_id: post_response["id"], user_guid: post_response["user_guid"], 
-          aggregated_at: post_response["aggregated_at"], institution_code: post_response["institution_code"], 
-          is_being_aggregated: post_response["is_being_aggregated"], is_oauth: post_response["is_oauth"], 
-          metadata: post_response["metadata"], name: post_response["name"], successfully_aggregated_at: post_response["successfully_aggregated_at"])  
-      
+        temp_member = Member.new()
+        post_response.each_pair do |key, value|
+          unless key == "id"
+            if Member.attribute_names.include? key
+              temp_member.update_attribute("#{key}", post_response["#{key}"])
+            end
+          end
+        end
+        if !temp_member.valid?
+          return "problem creating member"
+        else 
+          temp_member.save
+          return temp_member
+        end 
       elsif post_response.code == 404
         #404 eror patch
         self.update_members
@@ -156,13 +164,23 @@ class User < ApplicationRecord
                                                           :pass => ENV["API_PASSWORD"])
                   .persistent "#{@@base_url}"
       status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
-      while status == "CREATED" do 
-        status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+    rescue
+      return "error conecting to API"
+    else
+      # while status == "CREATED" do 
+      #   status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+      # end
+      for i in 0..100 do
+        if status == "CREATED"
+          status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+        else
+          return status
+        end
       end
     ensure 
       http.close if http
     end
-    return status
+    return 1
   end
 
     #list members associated with user in API

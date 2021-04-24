@@ -13,11 +13,14 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    if logged_in?
-      current_user.update_members
+      if logged_in?
+        begin
+        current_user.update_members
+        rescue 
+        flash[:danger] = "Trouble Connecting, try again!"
+        redirect_to root_path
+      end
     end
-  # rescue 
-  #   redirect_to members_show_path
   end
 
   def create

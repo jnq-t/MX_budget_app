@@ -51,7 +51,7 @@
 <% end %>
 
 <% if transactions.is_a? String %>
-  <br><strong>No transactions available </strong>(<%= link_to "link memberships", member_path, class: "budget-link"%>)
+  <br><strong>No transactions available </strong>(<%= link_to "link memberships", members_path, class: "budget-link"%>)
 <% else %>
   <h2>Your Spending this month: <%= number_to_currency(transactions[:spent_this_month]) %></h2>
   <ul class = "list-group list-group-flush">
