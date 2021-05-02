@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 #gem for testing functionality" 
-gem 'rexml'
+gem 'rexml', '>= 3.2.5'
 
 #for http calls and parsing jsons
 gem 'http'
