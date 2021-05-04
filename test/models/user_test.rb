@@ -100,11 +100,12 @@ class UserTest < ActiveSupport::TestCase
 
     #valid user guid 
     assert_match @VALID_USR_REGEX, @user.guid
-    #persistent connection should raise a timeout error but the member should still be created
-    @user.create_member
-    members = @user.find_members
-    assert_equal 1, members.length, "test user should have exactly one member"
-    assert_match @VALID_MBR_REGEX, members[0]["guid"], "test member should have valid guid"
+    #TODO make this test reflect the exception handling in the app
+    #move this either to the member test or to integration test
+    # @user.create_member
+    # members = @user.find_members
+    # assert_equal 1, members.length, "test user should have exactly one member"
+    # assert_match @VALID_MBR_REGEX, members[0]["guid"], "test member should have valid guid"
 
 
     #delete user

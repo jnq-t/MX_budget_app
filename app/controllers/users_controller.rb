@@ -34,6 +34,11 @@ class UsersController < ApplicationController
       else
         render 'new'
       end
+    #user gave invalid params
+    elsif @user.errors.any?
+      #will render signup form with errors
+      render 'new'
+    #api is not creating a valid member, tell user to try again later
     else
       flash[:danger] = "Unable to connect to Platform API, please try again later" 
       render 'new'

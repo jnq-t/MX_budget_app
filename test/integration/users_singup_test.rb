@@ -11,6 +11,7 @@ class UsersSingupTest < ActionDispatch::IntegrationTest
                                          password_confirmation: "bar" } }
       end
       assert_template 'users/new'
+      assert_not !!flash[:danger]
     end
   
   test "valid signup information" do 
