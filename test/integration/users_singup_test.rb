@@ -24,6 +24,12 @@ class UsersSingupTest < ActionDispatch::IntegrationTest
     end
     follow_redirect! 
     assert_template 'members/index'
+
+    post members_path params: { member: { institution_code: "mxbank", 
+                                                 username: "mxuser",
+                                                 password: "password" } } 
+    #every expected outcome for current_user.create_member generates a flash response
+    assert_not flash.empty?
     #API cleanup
     User.last.delete_self
   end

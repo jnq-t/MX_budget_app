@@ -100,13 +100,13 @@ class UserTest < ActiveSupport::TestCase
 
     #valid user guid 
     assert_match @VALID_USR_REGEX, @user.guid
-    #TODO make this test reflect the exception handling in the app
-    #move this either to the member test or to integration test
+
+    #THIS METHOD OF TESTING USER CREATION WOULD WORK IF THE API ALWAYS CREATED 
+    ## MEMBER WHEN GIVEN VALID PARAMS => this test functionality has moved to user_singup_test
     # @user.create_member
     # members = @user.find_members
     # assert_equal 1, members.length, "test user should have exactly one member"
     # assert_match @VALID_MBR_REGEX, members[0]["guid"], "test member should have valid guid"
-
 
     #delete user
     assert_equal 204, @user.delete_self, "test user should be successfully deleted"
