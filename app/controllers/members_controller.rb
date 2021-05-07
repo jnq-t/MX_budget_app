@@ -11,7 +11,7 @@ class MembersController < ApplicationController
     begin
     member = current_user.create_member(params[:member][:institution_code], params[:member][:username], params[:member][:password])
     if !!member 
-      status = member.check_status_persistent 
+      status = current_user.check_status_persistent(member.guid)
     end
     rescue
       flash.now[:danger] = "Trouble connecting with MX api, try again!" 
