@@ -27,6 +27,31 @@ class Member < ApplicationRecord
     return response.parse["member"]["connection_status"], "successfully aggregated at: #{response.parse["member"]["successfully_aggregated_at"]}"
   end
 
+  def check_status_persistent
+    begin
+      http = HTTP.headers(:accept => @@accept).basic_auth(:user => ENV["API_USERNAME"], 
+                                                          :pass => ENV["API_PASSWORD"])
+                  .persistent "#{@@base_url}"
+      status = http.get("/users/#{self.guid}/members/#{self.guid}/status").parse["member"]["connection_status"]
+    rescue
+      return "error conecting to API"
+    else
+      # while status == "CREATED" do 
+      #   status = http.get("/users/#{self.guid}/members/#{member_guid}/status").parse["member"]["connection_status"]
+      # end
+      for i in 0..100 do
+        if status == "CREATED"
+          status = http.get("/users/#{self.guid}/members/#{self.guid}/status").parse["member"]["connection_status"]
+        else
+          return status
+        end
+      end
+    ensure 
+      http.close if http
+    end
+    return 1
+  end
+
   def aggregate_member
     HTTP.headers(:accept => @@accept)
         .basic_auth(:user => ENV["API_USERNAME"], :pass => ENV["API_PASSWORD"])
